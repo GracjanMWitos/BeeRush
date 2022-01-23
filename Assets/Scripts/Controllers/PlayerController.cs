@@ -46,11 +46,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float flyingSpeed = 2f;
 
     [Header("Movement Value")]
-    [SerializeField] Vector3 moveValue;
+    public Vector3 moveValue;
     [SerializeField] Vector3 lastPosition; //Player position in last frame//
 
     [Header("Input Values")]
-    [SerializeField] Vector2 mousePosition;
+    [SerializeField] public Vector2 mousePosition;
 
     [Header("Time Count")]
     [SerializeField] float timeAboveWater; //Time above water//
@@ -79,8 +79,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         #region Input Update
-        mousePosition = Camera.main.ScreenToWorldPoint(gameControls.Player.MousePosition.ReadValue<Vector2>());
-
+        
         #endregion Input Update
 
         #region Movement Update
@@ -91,7 +90,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         MovementExecution();
-        CursorControl();
     }
 
     #region Movement
@@ -112,7 +110,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            moveValue = new Vector3(Mathf.Clamp(mousePosition.x, -15.75f, 15.75f), Mathf.Clamp(mousePosition.y, -8.5f, 8.5f), 0);
+            moveValue = lastPosition;
+            if (playerCanMove)
+            {
+                lastPosition = cursorTransform.position;
+            }
         }
     }
     void Rotation()
@@ -125,14 +127,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion Movement
-    void CursorControl()
-    {
-        cursorTransform.position = moveValue;
-        if (playerIsBusy)
-            Cursor.visible = true;
-        else
-            Cursor.visible = false;
-    }
+
     #region Environment Interaction 
     void PlayerAboveWater()
     {
@@ -207,8 +202,6 @@ public class PlayerController : MonoBehaviour
             playerIsChangingPosition = false;
         }
 
-        lastPosition = transform.position;
-
         #endregion Changing position
     }
 
@@ -224,6 +217,6 @@ public class PlayerController : MonoBehaviour
     {
         gameControls.Disable();
     }
-    #endregion
+    #endregion OnEnable OnDisable
 }
 
