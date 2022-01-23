@@ -6,9 +6,23 @@ public class PlayerController : MonoBehaviour
 {
     #region Assignment
     Transform cursorTransform;
+    GameControls gameControls;
+    Rigidbody2D rigidbody;
     private void Awake()
     {
         cursorTransform = GameObject.Find("Cursor").transform;
+        gameControls = new GameControls();
+        rigidbody = GetComponent<Rigidbody2D>();
+
+        #region Input Actions
+        //Focusing
+        gameControls.Player.Focusing.performed += ctx => playerIsFocusing = true;
+        gameControls.Player.Focusing.performed += ctx => playerIsFocusing = false;
+        //MouseClick
+        gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = true;
+        gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = false;
+
+        #endregion Input Actions
     }
 
     #endregion Assignment
@@ -36,7 +50,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector3 lastPosition; //Player position in last frame//
 
     [Header("Input Values")]
-    [SerializeField] Vector2 movementInput;
     [SerializeField] Vector2 mousePosition;
 
     [Header("Time Count")]
@@ -66,24 +79,45 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         #region Input Update
+        mousePosition = Camera.main.ScreenToWorldPoint(gameControls.Player.MousePosition.ReadValue<Vector2>());
 
         #endregion Input Update
 
         #region Movement Update
         Movement();
-
+        PlayerMoveChecks();
         #endregion Movement Update
     }
     void FixedUpdate()
     {
         MovementExecution();
+        CursorControl();
     }
 
     #region Movement
     void Movement()
     {
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        moveValue = new Vector3(Mathf.Clamp(mousePosition.x, -15.75f, 15.75f), Mathf.Clamp(mousePosition.y, -8.5f, 8.5f), 0);
+        if (playerIsFocusing)
+        {
+            float radius = 400; //radius of *black circle*
+            Vector3 centerPosition = transform.localPosition; //center of *black circle*
+            float distance = Vector3.Distance(moveValue, centerPosition); //distance from ~green object~ to *black circle*
+
+            if (distance > radius) //If the distance is less than the radius, it is already within the circle.
+            {
+                Vector3 playerToCursor = moveValue - centerPosition; //~GreenPosition~ - *BlackCenter*
+                playerToCursor *= radius / distance; //Multiply by radius //Divide by Distance
+                moveValue = centerPosition + playerToCursor; //*BlackCenter* + all that Math
+            }
+        }
+        else
+        {
+            moveValue = new Vector3(Mathf.Clamp(mousePosition.x, -15.75f, 15.75f), Mathf.Clamp(mousePosition.y, -8.5f, 8.5f), 0);
+        }
+    }
+    void Rotation()
+    {
+
     }
     void MovementExecution()
     {
@@ -93,7 +127,7 @@ public class PlayerController : MonoBehaviour
     #endregion Movement
     void CursorControl()
     {
-        cursorTransform.position = moveValue * Time.deltaTime;
+        cursorTransform.position = moveValue;
         if (playerIsBusy)
             Cursor.visible = true;
         else
@@ -150,7 +184,7 @@ public class PlayerController : MonoBehaviour
     void PlayerMoveChecks() //Checking if player Giving inputs, and if changing position//
     {
         #region Is Moving
-        if (movementInput.x != 0 || movementInput.y != 0)//Player giving inputs//
+        if (mousePosition != (Vector2)transform.position)//Player giving inputs//
         {
             playerIsMoving = true;
         }
@@ -179,4 +213,17 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion Statement Check
+
+    #region OnEnable OnDisable
+    void OnEnable()
+    {
+        gameControls.Enable();
+    }
+
+    void OnDisable()
+    {
+        gameControls.Disable();
+    }
+    #endregion
 }
+
