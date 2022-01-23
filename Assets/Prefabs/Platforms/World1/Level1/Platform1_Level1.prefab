@@ -80,7 +80,7 @@ SpriteRenderer:
   m_Size: {x: 0.984375, y: 0.984375}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!60 &3124878094941595071
@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 7967144554226347668}
   m_Layer: 0
   m_Name: Platform1_Level1
-  m_TagString: Untagged
+  m_TagString: Enviorment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
