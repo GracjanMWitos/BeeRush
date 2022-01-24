@@ -20,7 +20,6 @@ public class PlatformManager : MonoBehaviour
     public Transform spawnPoint;
     void Start()
     {
-        spawnPoint = GameObject.Find("SpawnPoint").transform;
         GenerateWorld();
     }
 
@@ -40,8 +39,7 @@ public class PlatformManager : MonoBehaviour
                     if (level.levelNumber == i)
                     {
                         Vector3 pos = new Vector3(0f, 40 * i, 0f);
-                        spawnPoint.position = pos;
-                        Instantiate(level.platforms[Random.Range(0, level.platforms.Length)], spawnPoint.position, Quaternion.identity, GameObject.Find("Platform").transform);
+                        Instantiate(level.platforms[Random.Range(0, level.platforms.Length)], pos, Quaternion.identity, GameObject.Find("Platform").transform);
                     }
                 }
             }

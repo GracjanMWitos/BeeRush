@@ -13281,7 +13281,7 @@ GameObject:
   - component: {fileID: 3596410556371095582}
   - component: {fileID: 2972692696757504791}
   - component: {fileID: 113464785764175251}
-  - component: {fileID: 4348975142581396714}
+  - component: {fileID: 4578561468345399558}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -21093,8 +21093,8 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!19719996 &4348975142581396714
-TilemapCollider2D:
+--- !u!60 &4578561468345399558
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -21107,5 +21107,24 @@ TilemapCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_MaximumTileChangeCount: 1000
-  m_ExtrusionFactor: 0.00001
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -5.009568, y: 6.4075737}
+      - {x: -8.996977, y: 10.469807}
+      - {x: -9.181025, y: 16.49803}
+      - {x: -4.103302, y: 20.971684}
+      - {x: -4.0305643, y: 27.01433}
+      - {x: -7.028384, y: 31.04848}
+      - {x: -15.924304, y: 31.024965}
+      - {x: -15.972319, y: -9.196167}
+      - {x: -8.191483, y: -9.005829}
+      - {x: -5.206965, y: -1.1273518}
