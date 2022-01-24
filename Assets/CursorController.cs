@@ -14,8 +14,11 @@ public class CursorController : MonoBehaviour
     }
     #endregion Assingnment
 
+    #region Variables
+    string hittedObjectName;
     Vector2 mousePosition;
-    // Update is called once per frame
+
+    #endregion Variables
     void Update()
     {
         CursorControl();
@@ -24,7 +27,7 @@ public class CursorController : MonoBehaviour
     void CursorControl()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(gameControls.Player.MousePosition.ReadValue<Vector2>());
-        transform.position = new Vector3(Mathf.Clamp(mousePosition.x, -15.75f, 15.75f), Mathf.Clamp(mousePosition.y, -8.5f, 8.5f), 0);
+        transform.position = new Vector3(Mathf.Clamp(mousePosition.x, -15.75f, 15.75f), Mathf.Clamp(mousePosition.y, -8.5f + Camera.main.transform.position.y, 8.5f + Camera.main.transform.position.y), 0);
 
         if (playerController.playerIsBusy)
             Cursor.visible = true;
@@ -34,10 +37,12 @@ public class CursorController : MonoBehaviour
     void CharacterMovementControl()
     {
         RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
-        Debug.Log(hit.collider.gameObject.name);
-        if (hit.collider.gameObject.name == "Rock")
+        if (hit.collider != null)
+             hittedObjectName = hit.collider.gameObject.name;
+
+        if (hittedObjectName == "Rock")
             playerController.playerCanMove = false;
-        else if (hit.collider.gameObject.name != "Rock")
+        else if (hittedObjectName != "Rock" && hittedObjectName != "[Player] Bee")
             playerController.playerCanMove = true;
     }
     #region OnEnable OnDisable
