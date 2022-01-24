@@ -8,19 +8,23 @@ public class PlayerController : MonoBehaviour
     Transform cursorTransform;
     GameControls gameControls;
     Rigidbody2D rigidbody;
+    [SerializeField] SpriteRenderer returnControlSR;
+    [SerializeField] SpriteRenderer dashLimitingSR;
+
     private void Awake()
     {
         cursorTransform = GameObject.Find("Cursor").transform;
         gameControls = new GameControls();
         rigidbody = GetComponent<Rigidbody2D>();
-
+        returnControlSR = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        dashLimitingSR = transform.GetChild(1).GetComponent<SpriteRenderer>();
         #region Input Actions
         //Focusing
         gameControls.Player.Focusing.performed += ctx => playerIsFocusing = true;
-        gameControls.Player.Focusing.performed += ctx => playerIsFocusing = false;
+        gameControls.Player.Focusing.canceled += ctx => playerIsFocusing = false;
         //MouseClick
-        gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = true;
-        gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = false;
+        //gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = true;
+        //gameControls.Player.MouseClick.performed += ctx => playerIsFocusing = false;
 
         #endregion Input Actions
     }
@@ -95,27 +99,28 @@ public class PlayerController : MonoBehaviour
     #region Movement
     void Movement()
     {
+        #region Focusing
         if (playerIsFocusing)
         {
-            float radius = 400; //radius of *black circle*
-            Vector3 centerPosition = transform.localPosition; //center of *black circle*
-            float distance = Vector3.Distance(moveValue, centerPosition); //distance from ~green object~ to *black circle*
-
-            if (distance > radius) //If the distance is less than the radius, it is already within the circle.
-            {
-                Vector3 playerToCursor = moveValue - centerPosition; //~GreenPosition~ - *BlackCenter*
-                playerToCursor *= radius / distance; //Multiply by radius //Divide by Distance
-                moveValue = centerPosition + playerToCursor; //*BlackCenter* + all that Math
-            }
+            dashLimitingSR.enabled = true;
         }
+        #endregion Focusing
+
+        #region Normal move
         else
         {
             moveValue = lastPosition;
             if (playerCanMove)
             {
                 lastPosition = cursorTransform.position;
+                returnControlSR.enabled = false;
             }
+            else
+                returnControlSR.enabled = true;
+
+            dashLimitingSR.enabled = false;
         }
+        #endregion Normal move
     }
     void Rotation()
     {
@@ -123,7 +128,7 @@ public class PlayerController : MonoBehaviour
     }
     void MovementExecution()
     {
-        gameObject.GetComponent<Rigidbody2D>().position = Vector3.Lerp(transform.position, moveValue, flyingSpeed * Time.deltaTime);
+        rigidbody.position = Vector3.Lerp(transform.position, moveValue, flyingSpeed * Time.deltaTime);
     }
 
     #endregion Movement
